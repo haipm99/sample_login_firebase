@@ -1,0 +1,106 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1>Welcome to My Awesome App</h1>
+    <div id="firebaseui-auth-container"></div>
+    <div id="loader">Loading....</div>
+</div>
+
+
+
+@section scripts {
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-firestore.js"></script>
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyDd9nAR91xMHxJHB4jj2qx7ldtL3QK59CI",
+            authDomain: "my-login-project-haipm.firebaseapp.com",
+            databaseURL: "https://my-login-project-haipm.firebaseio.com",
+            projectId: "my-login-project-haipm",
+            storageBucket: "my-login-project-haipm.appspot.com",
+            messagingSenderId: "898831670308",
+            appId: "1:898831670308:web:f088a5613037f2be540cb1"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+
+        //var provider = new firebase.auth.GoogleAuthProvider();
+        //provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+        //firebase.auth().signInWithPopup(provider).then(function (result) {
+        //    // This gives you a Google Access Token. You can use it to access the Google API.
+        //    var token = result.credential.accessToken;
+        //    // The signed-in user info.
+        //    var user = result.user;
+        //    // ...
+        //}).catch(function (error) {
+        //    // Handle Errors here.
+        //    var errorCode = error.code;
+        //    var errorMessage = error.message;
+        //    // The email of the user's account used.
+        //    var email = error.email;
+        //    // The firebase.auth.AuthCredential type that was used.
+        //    var credential = error.credential;
+        //    // ...
+        //});
+
+
+
+        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+        var uiConfig = {
+            callbacks: {
+                signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+                    console.log(authResult);
+                    console.log(authResult.credential.idToken);
+                    window.preventDefault();
+                    // User successfully signed in.
+                    // Return type determines whether we continue the redirect automatically
+                    // or whether we leave that to developer to handle.
+                    return true;
+                },
+                uiShown: function () {
+                    // The widget is rendered.
+                    // Hide the loader.
+                    document.getElementById('loader').style.display = 'none';
+                }
+            },
+            // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+            signInFlow: 'popup',
+            signInSuccessUrl: '/success_page',
+            signInOptions: [
+                // Leave the lines as is for the providers you want to offer your users.
+                firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                //firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+                //firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+                //firebase.auth.GithubAuthProvider.PROVIDER_ID,
+                firebase.auth.EmailAuthProvider.PROVIDER_ID,
+                //firebase.auth.PhoneAuthProvider.PROVIDER_ID
+            ],
+            // Terms of service url.
+            tosUrl: '<your-tos-url>',
+            // Privacy policy url.
+            privacyPolicyUrl: '<your-privacy-policy-url>'
+        };
+        ui.start('#firebaseui-auth-container', uiConfig);
+
+        //function createNew() {
+        //    var email = document.getElementById("username").value;
+        //    var password = document.getElementById("password").value;
+        //    console.log(email);
+        //    firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+        //        alert("fail");
+        //        // Handle Errors here.
+        //        var errorCode = error.code;
+        //        var errorMessage = error.message;
+        //        window.preventDefault();
+        //        // ...
+        //    });
+        //}
+    </script>
+}
